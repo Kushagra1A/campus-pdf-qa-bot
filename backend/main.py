@@ -8,6 +8,9 @@ app = FastAPI()
 
 UPLOAD_DIR = "data"
 
+if not os.path.exists(UPLOAD_DIR):
+    os.makedirs(UPLOAD_DIR)
+
 
 @app.get("/")
 def home():
@@ -16,18 +19,20 @@ def home():
 
 @app.post("/upload")
 async def upload_pdf(file: UploadFile = File(...)):
-    file_location = os.path.join(UPLOAD_DIR, file.filename)
 
-    with open(file_location, "wb") as buffer:
+    file_path = os.path.join(UPLOAD_DIR, file.filename)
+
+    with open(file_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
 
-    ingest_pdf(file_location)
+    ingest_pdf(file_path)
 
     return {"message": "PDF processed successfully"}
 
 
 @app.get("/ask")
 def ask(question: str):
-    result = ask_question(question)
 
-    return {"context": result}
+    answer = ask_question(question)
+
+    return {"answer": answer}

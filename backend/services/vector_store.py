@@ -23,6 +23,9 @@ def create_vector_store(chunks):
 
 
 def search(query, k=3):
+    global index
+    global documents
+
     query_embedding = model.encode([query])
 
     distances, indices = index.search(np.array(query_embedding), k)

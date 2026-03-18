@@ -1,3 +1,10 @@
+from huggingface_hub import InferenceClient
+import os
+
+client = InferenceClient(
+    token=os.getenv("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")
+)
+
 from services.pdf_processor import extract_text_from_pdf, split_text
 from services.vector_store import create_vector_store, search
 
@@ -13,6 +20,28 @@ def ingest_pdf(file_path):
 def ask_question(question):
     context = search(question)
 
-    answer = "\n\n".join(context)
+    context_text = "\n\n".join(context)
+
+    prompt = f"""
+Answer the question using the context below.
+
+Context:
+{context_text}
+
+Question:
+{question}
+
+Give a clear structured answer.
+"""
+
+    response = client.chat.completions.create(
+        model="HuggingFaceH4/zephyr-7b-beta",
+        messages=[
+            {"role": "user", "content": prompt}
+        ],
+        max_tokens=300
+    )
+
+    answer = response.choices[0].message.content
 
     return answer

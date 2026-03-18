@@ -13,4 +13,6 @@ def ingest_pdf(file_path):
 def ask_question(question):
     context = search(question)
 
-    return context
+    answer = "\n\n".join(context)
+
+    return answer

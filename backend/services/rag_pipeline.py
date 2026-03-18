@@ -35,7 +35,7 @@ Give a clear structured answer.
 """
 
     response = client.chat.completions.create(
-        model="mistralai/Mistral-7B-Instruct-v0.2",
+        model="meta-llama/Llama-3.1-8B-Instruct",
         messages=[
             {"role": "user", "content": prompt}
         ],
